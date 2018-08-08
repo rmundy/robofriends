@@ -1,6 +1,6 @@
 import * as React from 'react';
-import Card from '../Card/Card';
-import { ICardProps } from '../Card/CardProps';
+import Card from '../../components/Card/Card';
+import { ICardProps } from '../../components/Card/CardProps';
 
 export interface ICardListProps {
   robots: ICardProps[];

@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { ICardProps } from '../Card/CardProps';
+import { ICardProps } from '../../components/Card/CardProps';
+import { Scroll } from '../../components/Scroll/Scroll';
+import SearchBox from '../../components/SearchBox/SearchBox';
 import CardList from '../CardList/CardList';
-import SearchBox from '../SearchBox/SearchBox';
 import './App.css';
 
 interface IAppProps {
@@ -17,9 +18,19 @@ export default class App extends React.Component<IAppProps, IAppState> {
   constructor(props: IAppProps) {
     super(props);
     this.state = {
-      robots: this.props.robots,
+      robots: [],
       searchField: ''
     };
+  }
+
+  public componentDidMount() {
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then((response) => {
+        return response.json();
+      })
+      .then((users) => {
+        this.setState({ robots: users });
+      });
   }
 
   public onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,17 +38,20 @@ export default class App extends React.Component<IAppProps, IAppState> {
   };
 
   public render() {
-    const filteredRobots = this.state.robots.filter((robot) => {
+    const {robots, searchField} = this.state;
+    const filteredRobots = robots.filter((robot) => {
       return robot.name
         .toLowerCase()
-        .includes(this.state.searchField.toLowerCase());
+        .includes(searchField.toLowerCase());
     });
 
     return (
       <div className="tc">
         <h1 className="f1">ROBOFRIENDS</h1>
         <SearchBox searchChange={this.onSearchChange} />
-        <CardList robots={filteredRobots} />
+        <Scroll>
+          <CardList robots={filteredRobots} />
+        </Scroll>
       </div>
     );
   }
